@@ -1,9 +1,23 @@
 var express = require("express");
 var multer = require("multer");
+var fs = require("fs");
+var rimraf = require("rimraf");
+
+const baseDir = "uploads/";
+
 var storage = multer.diskStorage({
-	destination: "uploads",
+	destination: function(req, file, cb) {
+		let dir = baseDir + req.query.id + Date.now();
+
+		if (!fs.existsSync(dir)) {
+			fs.mkdirSync(dir);
+		}
+
+		cb(null, dir);
+	},
+
 	filename: function(req, file, cb) {
-		cb(null, file.originalname);
+		cb(null, file.originalname + ".zip");
 	}
 });
 
@@ -19,10 +33,11 @@ app.use(function(req, res, next) {
 	next();
 });
 
-app.post("/static", upload.array("avatar"), function(req, res, next) {
+app.post("/deployments", upload.array("files"), function(req, res, next) {
 	// req.file is the `avatar` file
 	// req.body will hold the text fields, if there were any
-	res.send("upload completed");
+
+	res.send({ message: "upload completed" });
 });
 
 app.listen(3001, err => {
