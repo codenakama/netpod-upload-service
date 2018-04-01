@@ -3,7 +3,7 @@ var multer = require("multer");
 var fs = require("fs");
 var rimraf = require("rimraf");
 
-const baseDir = "uploads/";
+const baseDir = "drops/";
 
 var storage = multer.diskStorage({
 	destination: function(req, file, cb) {
